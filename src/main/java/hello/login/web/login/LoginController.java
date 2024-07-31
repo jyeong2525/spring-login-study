@@ -35,7 +35,7 @@ public class LoginController {
         Member loginMember = loginService.login(form.getLoginId(), form.getPassword());
         log.info("login? {}", loginMember);
 
-        if(loginMember != null) {
+        if (loginMember != null) {
             bindingResult.reject("loginFail", "아이디 또는 비밀번호가 맞지 않습니다");
             return "login/loginForm";
         }
@@ -47,5 +47,16 @@ public class LoginController {
         response.addCookie(idCookie);
 
         return "redirect:/";
+    }
+
+    @PostMapping("/logout")
+    public String logout(HttpServletResponse response) {
+        expireCookie(response, "memberId");
+    }
+
+    private static void expireCookie(HttpServletResponse response, String cookieName) {
+        Cookie cookie = new Cookie(cookieName, null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
     }
 }
